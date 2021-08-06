@@ -1,5 +1,5 @@
-var path,boy,cash,diamonds,jwellery,sword;
-var pathImg,boyImg,cashImg,diamondsImg,jwelleryImg,swordImg;
+var path,boy,cash,diamonds,jwellery,sword,end;
+var pathImg,boyImg,cashImg,diamondsImg,jwelleryImg,swordImg,endImg;
 var treasureCollection = 0;
 var cashG,diamondsG,jwelleryG,swordGroup;
 
@@ -14,8 +14,8 @@ function preload(){
   cashImg = loadImage("cash.png");
   diamondsImg = loadImage("diamonds.png");
   jwelleryImg = loadImage("jwell.png");
-  swordImg = loadImage("sword.png");
-  endImg =loadAnimation("gameOver.png");
+  swordImg = loadImage("SunMonster.png");
+  endImg =loadImage("gameOver.png");
 }
 
 function setup(){
@@ -25,6 +25,7 @@ function setup(){
 path=createSprite(200,200);
 path.addImage(pathImg);
 path.velocityY = 4;
+
 
 
 //creating boy running
@@ -58,6 +59,7 @@ function draw() {
     createDiamonds();
     createJwellery();
     createSword();
+    createEnd();
 
     if (cashG.isTouching(boy)) {
       cashG.destroyEach();
@@ -65,24 +67,32 @@ function draw() {
     }
     else if (diamondsG.isTouching(boy)) {
       diamondsG.destroyEach();
-
+      treasureCollection=treasureCollection+100;
       
     }else if(jwelleryG.isTouching(boy)) {
       jwelleryG.destroyEach();
-
+      treasureCollection=treasureCollection+10;
       
-    }else{
-      if(swordGroup.isTouching(boy)) {
+    }else if(swordGroup.isTouching(boy)){
+      swordGroup.destroyEach();
+      end.visible = true;
 
+      gameState = END;
     }
-  }
-  
+   
   drawSprites();
   textSize(20);
   fill(255);
   text("Treasure: "+ treasureCollection,150,30);
   }
 
+  if(gameState === END){
+    end.visible = true;
+    cash.velocityY = 0;
+    diamonds.velocityY = 0;
+    jwellery.velocityY = 0;
+    sword.velocityY = 0;
+  }
 }
 
 function createCash() {
@@ -122,9 +132,16 @@ function createSword(){
   if (World.frameCount % 530 == 0) {
   var sword = createSprite(Math.round(random(50, 350),40, 10, 10));
   sword.addImage(swordImg);
-  sword.scale=0.1;
+  sword.scale = 1;
   sword.velocityY = 3;
   sword.lifetime = 150;
   swordGroup.add(sword);
   }
+}
+function createEnd(){
+  end = createSprite(200,300,40,40);
+  end.addImage(endImg)
+  end.visible = false;
+  end.scale = 0.6;
+
 }
